@@ -1,0 +1,113 @@
+{
+  "name": "YouTube Shorts Otomasyonu",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "cronExpression", "expression": "0 8,11,14,17,20 * * *" }
+          ]
+        }
+      },
+      "id": "a1schedule",
+      "name": "Zamanlayici",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === KANAL AYARLARI ===\n// Her kanal icin bu workflow'u kopyalayip burayi degistir.\nconst channel = {\n  name: 'Kanal 1',\n  voice: 'en-US-AriaNeural', // Turkce icin: tr-TR-EmelNeural\n  topics: [\n    'Insan beyni hakkinda sasirtici bilimsel gercekler',\n    'Uzay ve evren hakkinda akil almaz bilgiler',\n    'Gunluk hayatta isine yarayacak psikoloji ipuclari',\n    'Tarihte yasanmis ilginc olaylar'\n  ]\n};\n\nconst topic = channel.topics[Math.floor(Math.random() * channel.topics.length)];\nreturn [{ json: { channelName: channel.name, voice: channel.voice, topic } }];"
+      },
+      "id": "a2config",
+      "name": "Kanal Ayarlari",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 1024,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"You are a viral YouTube Shorts scriptwriter. Topic: {{ $json.topic }}.\\n\\nReturn ONLY raw JSON (no markdown, no code fences) with these keys:\\n- title: catchy, <=80 chars\\n- description: 2 sentences + 3 relevant hashtags\\n- tags: array of 8-12 short keyword strings\\n- narration: spoken voiceover text, 110-140 words (~45-55s), strong hook in the first sentence, no stage directions\\n- keywords: array of 4-6 SIMPLE English visual search terms for stock footage (e.g. 'brain', 'galaxy', 'city night')\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "a3claude",
+      "name": "Claude - Senaryo Uret",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst raw = $json.content[0].text;\nconst clean = raw.replace(/```json/gi, '').replace(/```/g, '').trim();\nconst data = JSON.parse(clean);\n\nconst id = Date.now() + '-' + Math.floor(Math.random() * 1000);\nconst dir = '/data/jobs/' + id;\nfs.mkdirSync(dir, { recursive: true });\n\nconst job = {\n  title: data.title,\n  description: data.description,\n  tags: data.tags || [],\n  narration: data.narration,\n  keywords: data.keywords || [],\n  voice: $('Kanal Ayarlari').item.json.voice\n};\nfs.writeFileSync(dir + '/job.json', JSON.stringify(job));\n\nreturn [{ json: {\n  jobDir: dir,\n  title: data.title,\n  description: data.description,\n  tags: (data.tags || []).join(',')\n} }];"
+      },
+      "id": "a4prepare",
+      "name": "Isi Hazirla",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "command": "=python3 /scripts/make_short.py {{ $json.jobDir }}"
+      },
+      "id": "a5render",
+      "name": "Video Render (ffmpeg)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "fileSelector": "={{ $('Isi Hazirla').item.json.jobDir }}/output.mp4",
+        "options": { "dataPropertyName": "data" }
+      },
+      "id": "a6readfile",
+      "name": "Videoyu Oku",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $('Isi Hazirla').item.json.title }}",
+        "categoryId": "22",
+        "regionCode": "TR",
+        "binaryProperty": "data",
+        "options": {
+          "description": "={{ $('Isi Hazirla').item.json.description }}\n\n#shorts",
+          "privacyStatus": "private",
+          "tags": "={{ $('Isi Hazirla').item.json.tags }}"
+        }
+      },
+      "id": "a7youtube",
+      "name": "YouTube'a Yukle",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [1560, 400]
+    }
+  ],
+  "connections": {
+    "Zamanlayici": { "main": [[{ "node": "Kanal Ayarlari", "type": "main", "index": 0 }]] },
+    "Kanal Ayarlari": { "main": [[{ "node": "Claude - Senaryo Uret", "type": "main", "index": 0 }]] },
+    "Claude - Senaryo Uret": { "main": [[{ "node": "Isi Hazirla", "type": "main", "index": 0 }]] },
+    "Isi Hazirla": { "main": [[{ "node": "Video Render (ffmpeg)", "type": "main", "index": 0 }]] },
+    "Video Render (ffmpeg)": { "main": [[{ "node": "Videoyu Oku", "type": "main", "index": 0 }]] },
+    "Videoyu Oku": { "main": [[{ "node": "YouTube'a Yukle", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

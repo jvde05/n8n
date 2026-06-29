@@ -1,0 +1,31 @@
+services:
+  n8n:
+    build: .
+    container_name: shorts-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # --- n8n temel ayarlar ---
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
+      - GENERIC_TIMEZONE=${TZ:-Europe/Istanbul}
+      - TZ=${TZ:-Europe/Istanbul}
+      # Code node icinde fs / require kullanabilmek icin
+      - NODE_FUNCTION_ALLOW_BUILTIN=fs,path,child_process
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+      # Render isleri uzun surebilir
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      # --- API anahtarlari (workflow ve render bunlari okur) ---
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - TTS_VOICE=${TTS_VOICE:-en-US-AriaNeural}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./data:/data
+      - ./scripts:/scripts
+
+volumes:
+  n8n_data:
