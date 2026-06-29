@@ -147,6 +147,35 @@ Daha da yukari cekmek istersen (`scripts/make_short.py`):
 > Not: 60fps istersen `FPS = 60` yap **ve** Pexels'te 60fps klip sec; aksi halde
 > 30fps kaynagi 60'a cikarmak kalite katmaz, sadece dosyayi buyutur.
 
+## 10. Kendi PC'nde calistirma (sunucu gerekmez)
+
+Bu sistem kendi bilgisayarinda sorunsuz calisir; **disariya port acmana, statik IP
+veya alan adina gerek yoktur.**
+
+**Baglantilar nasil isliyor:**
+- **n8n arayuzu** sadece `localhost:5678`'de, kendi tarayicinda acilir (disa kapali).
+- **Claude / Pexels / YouTube** cagrilari PC'den internete *cikan* (outbound)
+  isteklerdir — her ev modeminin arkasinda calisir, modem ayari gerekmez.
+- **YouTube OAuth:** redirect URI olarak `http://localhost:5678/rest/oauth2-credential/callback`
+  yeterli. Baglanirken tarayici ayni PC'de oldugu icin Google `localhost`'a geri
+  donebilir — public IP gerekmez.
+
+> `.env` icindeki `N8N_HOST` / `WEBHOOK_URL` / `N8N_PROTOCOL` sadece **uzak sunucu**
+> kurulumu icindir. Kendi PC'nde `localhost` olarak birak.
+
+**Tek sart — PC acik olmali:** Zamanlayici tetiklendiginde PC acik ve Docker
+calisiyor olmali. Uyku/kapali ise o video uretilmez.
+- Windows: *Ayarlar → Guc → Uyku: Asla* (uretim saatlerinde).
+- 7/24 istersen kodun aynisini ~5$/ay bir VPS'e veya hep-acik bir mini PC'ye tasi.
+
+**Gereksinim:** Docker Desktop (Windows/Mac) veya Docker Engine (Linux). ~2-4 GB RAM.
+Render CPU kullanir; normal bir PC'de video basina ~1-3 dk.
+
+**Windows / Mac izin notu:** README adim 2'deki `sudo chown -R 1000:1000 data`
+komutu **sadece Linux** icindir. Docker Desktop (Windows/Mac) dosya izinlerini
+kendi yonettigi icin bu adimi **atla** — bind mount otomatik calisir. (Sorun
+yasarsan compose'da `./data:/data` yerine adlandirilmis volume kullanabilirsin.)
+
 ## Sorun giderme
 
 - **Render node hata veriyor:** `docker compose logs -f n8n` ile ffmpeg/edge-tts
