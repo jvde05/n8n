@@ -18,6 +18,9 @@ services:
       - NODE_FUNCTION_ALLOW_EXTERNAL=*
       # Render isleri uzun surebilir
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      # ACOS cekirdegi
+      - PYTHONPATH=/app
+      - ACOS_LOG_LEVEL=INFO
       # --- API anahtarlari (workflow ve render bunlari okur) ---
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - PEXELS_API_KEY=${PEXELS_API_KEY}
@@ -26,6 +29,8 @@ services:
       - n8n_data:/home/node/.n8n
       - ./data:/data
       - ./scripts:/scripts
+      - ./acos:/app/acos
+      - ./channels:/channels
 
 volumes:
   n8n_data:

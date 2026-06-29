@@ -1,7 +1,14 @@
-# YouTube Shorts Otomasyonu (n8n, self-host)
+# ACOS — AI Content Operating System (self-host)
 
-Faceless YouTube Shorts'u **otomatik** uretip yukleyen, mumkun oldugunca **ucretsiz**
-ve **kendi sunucunda** calisan bir n8n kurulumu.
+Faceless kisa video icerigi **otomatik** uretip yukleyen, mumkun oldugunca
+**ucretsiz** ve **kendi sunucunda** calisan moduler bir sistem. Bugun YouTube
+Shorts; mimari cok platformlu (TikTok / Reels / X ... yol haritasinda).
+
+> 🏗️ Teknik mimari, provider yapisi ve yol haritasi icin: **[ARCHITECTURE.md](ARCHITECTURE.md)**
+>
+> Is mantigi `acos/` paketinde (moduler, takilip-cikarilabilir provider'lar).
+> n8n yalnizca tetikleme/OAuth/ops katmanidir; sistem `python -m acos.cli` ile
+> n8n olmadan da calisir.
 
 Akis (her calismada bir Short):
 

@@ -1,0 +1,47 @@
+# Kanal yapilandirmasi ornegi. Her kanal icin bir kopya olustur.
+# Global (Ingilizce) bir bilgi/motivasyon kanali ornegi:
+
+name: "Mind Blown Facts"
+niche: "mind-blowing science and history facts"
+language: en
+voice: en-US-AriaNeural          # TR icin: tr-TR-EmelNeural / tr-TR-AhmetNeural
+platforms:
+  - youtube                       # ilerde: tiktok, instagram, ...
+
+# Trend kesfi (anahtar gerekmez). Bos birakirsan asagidaki 'topics' kullanilir.
+trend_sources:
+  - google_trends
+  - reddit
+subreddits:
+  - todayilearned
+  - Damnthatsinteresting
+  - space
+
+# Trend bulunamazsa kullanilacak statik yedek konular:
+topics:
+  - "psychological tricks that actually work"
+  - "space facts that sound fake but are true"
+  - "historical events nobody talks about"
+
+llm_model: claude-haiku-4-5-20251001
+
+providers:
+  llm: anthropic
+  tts: edge
+  video: pexels
+  render: ffmpeg
+  publish: youtube
+
+render:
+  width: 1080
+  height: 1920
+  fps: 30
+  crf: 18
+  preset: slow
+  motion: true                    # dinamik zoom / Ken Burns
+  cinematic: true                 # sinematik renk + keskinlik
+  loudnorm: true                  # ses normalizasyonu (-14 LUFS)
+  words_per_caption: 3
+  clip_seconds: 6
+  bgm_path: /scripts/assets/bgm.mp3
+  bgm_volume: 0.12
