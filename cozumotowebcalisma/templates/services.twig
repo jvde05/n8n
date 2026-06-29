@@ -1,0 +1,28 @@
+{% extends 'layout.twig' %}
+{% block title %}Hizmetlerimiz | {{ site.brand_name|default('Çözüm Oto Elektrik') }}{% endblock %}
+{% block description %}Renault EDC şanzıman, beyin onarımı, kavrama, DW5 otomatik şanzıman, AdBlue, EGR ve partikül filtre temizliği hizmetlerimiz.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div class="container">
+        <nav class="breadcrumb"><a href="/">Anasayfa</a> / <span>Hizmetler</span></nav>
+        <h1>Hizmetlerimiz</h1>
+        <p>Renault ve uyumlu modellerde elektronik ve mekanik arızalara profesyonel çözümler.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="cards">
+            {% for s in services %}
+            <a class="card" href="/hizmet/{{ s.slug }}">
+                <span class="card__icon">{{ s.icon|default('🔧') }}</span>
+                <h3>{{ s.title }}</h3>
+                <p>{{ s.summary|default(s.body|excerpt(120)) }}</p>
+                <span class="card__more">Detaylar →</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

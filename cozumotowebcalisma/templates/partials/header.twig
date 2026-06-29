@@ -1,0 +1,44 @@
+<div class="topbar">
+    <div class="container topbar__inner">
+        <span class="topbar__item">📍 {{ site.address|default('Esenyurt / İstanbul')|excerpt(60) }}</span>
+        <span class="topbar__spacer"></span>
+        {% if site.phone_primary %}
+            <a class="topbar__item" href="{{ tel_link(site.phone_primary) }}">📞 {{ site.phone_primary }}</a>
+        {% endif %}
+        {% if site.working_hours %}<span class="topbar__item topbar__hours">🕐 {{ site.working_hours }}</span>{% endif %}
+    </div>
+</div>
+
+<header class="header" id="site-header">
+    <div class="container header__inner">
+        <a class="brand" href="/">
+            <span class="brand__mark">RES</span>
+            <span class="brand__text">
+                <strong>{{ site.brand_name|default('Çözüm Oto Elektrik') }}</strong>
+                <small>Renault Elektronik Servisi</small>
+            </span>
+        </a>
+
+        <button class="nav-toggle" aria-label="Menü" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+
+        <nav class="nav" id="main-nav">
+            <a href="/">Anasayfa</a>
+            <div class="nav__dropdown">
+                <a href="/hizmetler" class="nav__dropdown-toggle">Hizmetler ▾</a>
+                <div class="nav__menu">
+                    {% for s in menu_services %}
+                        <a href="/hizmet/{{ s.slug }}">{{ s.title }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <a href="/hakkimizda">Hakkımızda</a>
+            <a href="/galeri">Galeri</a>
+            <a href="/iletisim">İletişim</a>
+            {% if site.whatsapp %}
+                <a class="nav__cta" href="{{ whatsapp_link('Merhaba, bilgi almak istiyorum.') }}" target="_blank" rel="noopener">WhatsApp</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>

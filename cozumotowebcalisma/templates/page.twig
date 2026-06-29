@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ page.meta_title|default(page.title ~ ' | ' ~ site.brand_name) }}{% endblock %}
+{% block description %}{{ page.meta_description|default(page.body|excerpt(150)) }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div class="container">
+        <nav class="breadcrumb"><a href="/">Anasayfa</a> / <span>{{ page.title }}</span></nav>
+        <h1>{{ page.title }}</h1>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        <div class="prose prose--wide">{{ page.body|raw }}</div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'messages' %}
+{% block title %}Mesaj{% endblock %}
+
+{% block content %}
+<div class="adm-card adm-card--narrow">
+    <div class="adm-card__head">
+        <h2>{{ message.subject|default('İletişim Formu') }}</h2>
+        <a class="adm-btn" href="/yonetim/mesajlar">← Geri</a>
+    </div>
+    <table class="adm-detail">
+        <tr><th>Ad Soyad</th><td>{{ message.name }}</td></tr>
+        <tr><th>Telefon</th><td>{% if message.phone %}<a href="{{ tel_link(message.phone) }}">{{ message.phone }}</a>{% else %}—{% endif %}</td></tr>
+        <tr><th>E-posta</th><td>{% if message.email %}<a href="mailto:{{ message.email }}">{{ message.email }}</a>{% else %}—{% endif %}</td></tr>
+        <tr><th>Tarih</th><td>{{ message.created_at }}</td></tr>
+    </table>
+    <div class="adm-message-body">{{ message.body|nl2br }}</div>
+    <div class="adm-save">
+        {% if message.phone %}<a class="adm-btn adm-btn--primary" href="{{ whatsapp_link() }}" target="_blank">WhatsApp ile Yanıtla</a>{% endif %}
+        <form method="post" action="/yonetim/mesajlar/{{ message.id }}/sil" data-confirm="Mesaj silinsin mi?">
+            <input type="hidden" name="_csrf" value="{{ csrf }}">
+            <button class="adm-btn adm-btn--danger">Sil</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

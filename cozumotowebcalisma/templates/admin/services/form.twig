@@ -1,0 +1,38 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'services' %}
+{% block title %}{{ service ? 'Hizmet Düzenle' : 'Yeni Hizmet' }}{% endblock %}
+
+{% block content %}
+<form class="adm-form" method="post" action="{{ action }}">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <div class="adm-form__grid">
+        <div class="adm-form__main">
+            <div class="adm-card">
+                <label>Başlık *<input type="text" name="title" value="{{ service.title|default('') }}" required></label>
+                <label>Slug (boş bırakılırsa başlıktan üretilir)<input type="text" name="slug" value="{{ service.slug|default('') }}" placeholder="edc-sanziman"></label>
+                <label>Kısa Özet<textarea name="summary" rows="2">{{ service.summary|default('') }}</textarea></label>
+                <label>İçerik (HTML destekler)<textarea name="body" rows="14" class="adm-html">{{ service.body|default('') }}</textarea></label>
+            </div>
+            <div class="adm-card">
+                <h3>SEO</h3>
+                <label>Meta Başlık<input type="text" name="meta_title" value="{{ service.meta_title|default('') }}"></label>
+                <label>Meta Açıklama<textarea name="meta_description" rows="2">{{ service.meta_description|default('') }}</textarea></label>
+            </div>
+        </div>
+        <div class="adm-form__side">
+            <div class="adm-card">
+                <h3>Ayarlar</h3>
+                <label>İkon (emoji)<input type="text" name="icon" value="{{ service.icon|default('🔧') }}"></label>
+                <label>Görsel yolu<input type="text" name="image" value="{{ service.image|default('') }}" placeholder="assets/uploads/..."></label>
+                <label>Sıra<input type="number" name="sort_order" value="{{ service.sort_order|default(0) }}"></label>
+                <label class="adm-check"><input type="checkbox" name="is_active" {{ service is null or service.is_active ? 'checked' }}> Aktif</label>
+                <label class="adm-check"><input type="checkbox" name="enable_districts" {{ service is null or service.enable_districts ? 'checked' }}> İlçe landing sayfaları üret</label>
+            </div>
+            <div class="adm-card adm-save">
+                <button type="submit" class="adm-btn adm-btn--primary">Kaydet</button>
+                <a href="/yonetim/hizmetler" class="adm-btn">Vazgeç</a>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

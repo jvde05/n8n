@@ -1,0 +1,38 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'settings' %}
+{% block title %}Site Ayarları{% endblock %}
+
+{% set labels = {
+    'brand_name': 'Marka Adı', 'site_title': 'Site Başlığı (SEO)', 'site_description': 'Site Açıklaması (SEO)',
+    'phone_primary': 'Telefon (Birincil)', 'phone_secondary': 'Telefon (İkincil)', 'whatsapp': 'WhatsApp Numarası',
+    'email': 'E-posta', 'address': 'Adres', 'maps_url': 'Google Maps Linki', 'maps_embed': 'Harita Embed Kodu (iframe)',
+    'working_hours': 'Çalışma Saatleri',
+    'instagram': 'Instagram', 'facebook': 'Facebook', 'twitter': 'X (Twitter)', 'youtube': 'YouTube',
+    'linkedin': 'LinkedIn', 'pinterest': 'Pinterest',
+    'hero_title': 'Anasayfa Başlık', 'hero_subtitle': 'Anasayfa Alt Başlık'
+} %}
+{% set longfields = ['site_description', 'address', 'maps_embed', 'hero_subtitle'] %}
+
+{% block content %}
+<form class="adm-form" method="post" action="/yonetim/ayarlar">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <div class="adm-card">
+        <h2>Genel & İletişim</h2>
+        <div class="adm-form__cols">
+            {% for key in keys %}
+            <label class="{{ key in longfields ? 'adm-col-full' }}">
+                {{ labels[key]|default(key) }}
+                {% if key in longfields %}
+                    <textarea name="{{ key }}" rows="3">{{ values[key]|default('') }}</textarea>
+                {% else %}
+                    <input type="text" name="{{ key }}" value="{{ values[key]|default('') }}">
+                {% endif %}
+            </label>
+            {% endfor %}
+        </div>
+        <div class="adm-save">
+            <button type="submit" class="adm-btn adm-btn--primary">Ayarları Kaydet</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

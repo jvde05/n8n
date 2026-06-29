@@ -1,0 +1,43 @@
+<footer class="footer">
+    <div class="container footer__grid">
+        <div class="footer__col">
+            <div class="brand brand--footer">
+                <span class="brand__mark">RES</span>
+                <span class="brand__text"><strong>{{ site.brand_name|default('Çözüm Oto Elektrik') }}</strong>
+                <small>Renault Elektronik Servisi</small></span>
+            </div>
+            <p class="footer__about">{{ site.site_description|default('Renault EDC şanzıman, beyin onarımı, kavrama ve oto elektronik arızalarında garantili, aynı gün teslim hizmet.') }}</p>
+            <div class="footer__social">
+                {% if site.instagram %}<a href="{{ site.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>{% endif %}
+                {% if site.facebook %}<a href="{{ site.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">Facebook</a>{% endif %}
+                {% if site.youtube %}<a href="{{ site.youtube }}" target="_blank" rel="noopener" aria-label="YouTube">YouTube</a>{% endif %}
+            </div>
+        </div>
+
+        <div class="footer__col">
+            <h4>Hizmetler</h4>
+            <ul>
+                {% for s in menu_services|slice(0, 8) %}
+                    <li><a href="/hizmet/{{ s.slug }}">{{ s.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="footer__col">
+            <h4>İletişim</h4>
+            <ul class="footer__contact">
+                {% if site.address %}<li>📍 {{ site.address }}</li>{% endif %}
+                {% if site.phone_primary %}<li>📞 <a href="{{ tel_link(site.phone_primary) }}">{{ site.phone_primary }}</a></li>{% endif %}
+                {% if site.phone_secondary %}<li>📞 <a href="{{ tel_link(site.phone_secondary) }}">{{ site.phone_secondary }}</a></li>{% endif %}
+                {% if site.email %}<li>✉️ <a href="mailto:{{ site.email }}">{{ site.email }}</a></li>{% endif %}
+                {% if site.working_hours %}<li>🕐 {{ site.working_hours }}</li>{% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="footer__bottom">
+        <div class="container footer__bottom-inner">
+            <span>© {{ app.year }} {{ site.brand_name|default('Çözüm Oto Elektrik') }}. Tüm hakları saklıdır.</span>
+            <a href="/yonetim/giris" class="footer__admin">Yönetim</a>
+        </div>
+    </div>
+</footer>

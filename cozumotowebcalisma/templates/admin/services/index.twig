@@ -1,0 +1,36 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'services' %}
+{% block title %}Hizmetler{% endblock %}
+
+{% block content %}
+<div class="adm-card">
+    <div class="adm-card__head">
+        <h2>Hizmetler ({{ services|length }})</h2>
+        <a class="adm-btn adm-btn--primary" href="/yonetim/hizmetler/yeni">+ Yeni Hizmet</a>
+    </div>
+    <table class="adm-table">
+        <thead><tr><th>Sıra</th><th>Başlık</th><th>Slug</th><th>İlçe Sayfaları</th><th>Durum</th><th></th></tr></thead>
+        <tbody>
+        {% for s in services %}
+        <tr>
+            <td>{{ s.sort_order }}</td>
+            <td><strong>{{ s.icon }} {{ s.title }}</strong></td>
+            <td><code>/hizmet/{{ s.slug }}</code></td>
+            <td>{{ s.enable_districts ? 'Açık' : 'Kapalı' }}</td>
+            <td>{% if s.is_active %}<span class="adm-badge adm-badge--on">Aktif</span>{% else %}<span class="adm-badge">Pasif</span>{% endif %}</td>
+            <td class="adm-actions">
+                <a class="adm-link" href="/hizmet/{{ s.slug }}" target="_blank">Gör</a>
+                <a class="adm-link" href="/yonetim/hizmetler/{{ s.id }}/duzenle">Düzenle</a>
+                <form method="post" action="/yonetim/hizmetler/{{ s.id }}/sil" data-confirm="Bu hizmeti silmek istediğinize emin misiniz?">
+                    <input type="hidden" name="_csrf" value="{{ csrf }}">
+                    <button class="adm-link adm-link--danger">Sil</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="adm-empty">Henüz hizmet eklenmemiş.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+# Çözüm Oto Elektrik - Apache front controller yönlendirmesi
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Güvenlik başlıkları
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Dizin listelemeyi kapat
+Options -Indexes

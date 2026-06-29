@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Giriş · Yönetim Paneli</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body class="adm-login-body">
+<div class="adm-login">
+    <div class="adm-login__brand">
+        <span class="adm-brand__mark">RES</span>
+        <h1>Çözüm Oto Elektrik</h1>
+        <p>Yönetim Paneli</p>
+    </div>
+
+    {% if flash is defined and flash|length %}
+        {% for f in flash %}<div class="adm-flash adm-flash--{{ f.type }}">{{ f.message }}</div>{% endfor %}
+    {% endif %}
+
+    <form method="post" action="/yonetim/giris" class="adm-login__form">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <label>E-posta<input type="email" name="email" required autofocus></label>
+        <label>Şifre<input type="password" name="password" required></label>
+        <button type="submit" class="adm-btn adm-btn--primary">Giriş Yap</button>
+    </form>
+    <a href="/" class="adm-login__back">← Siteye dön</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'faqs' %}
+{% block title %}{{ faq ? 'Soru Düzenle' : 'Yeni Soru' }}{% endblock %}
+
+{% block content %}
+<form class="adm-form" method="post" action="{{ action }}">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <div class="adm-card adm-card--narrow">
+        <label>Hizmet (boş = Genel SSS)
+            <select name="service_id">
+                <option value="">Genel</option>
+                {% for s in services %}
+                <option value="{{ s.id }}" {{ faq and faq.service_id == s.id ? 'selected' }}>{{ s.title }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Soru *<input type="text" name="question" value="{{ faq.question|default('') }}" required></label>
+        <label>Cevap *<textarea name="answer" rows="5" required>{{ faq.answer|default('') }}</textarea></label>
+        <label>Sıra<input type="number" name="sort_order" value="{{ faq.sort_order|default(0) }}"></label>
+        <label class="adm-check"><input type="checkbox" name="is_active" {{ faq is null or faq.is_active ? 'checked' }}> Aktif</label>
+        <div class="adm-save">
+            <button type="submit" class="adm-btn adm-btn--primary">Kaydet</button>
+            <a href="/yonetim/sss" class="adm-btn">Vazgeç</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

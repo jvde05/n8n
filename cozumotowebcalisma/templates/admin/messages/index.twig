@@ -1,0 +1,32 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'messages' %}
+{% block title %}Mesajlar{% endblock %}
+
+{% block content %}
+<div class="adm-card">
+    <div class="adm-card__head"><h2>İletişim Mesajları ({{ messages|length }})</h2></div>
+    <table class="adm-table">
+        <thead><tr><th>Durum</th><th>Ad</th><th>İletişim</th><th>Konu</th><th>Tarih</th><th></th></tr></thead>
+        <tbody>
+        {% for m in messages %}
+        <tr class="{{ m.is_read ? '' : 'is-unread' }}">
+            <td>{% if m.is_read %}<span class="adm-badge">Okundu</span>{% else %}<span class="adm-badge adm-badge--on">Yeni</span>{% endif %}</td>
+            <td><strong>{{ m.name }}</strong></td>
+            <td>{{ m.phone|default('') }}{% if m.email %}<br><small>{{ m.email }}</small>{% endif %}</td>
+            <td>{{ m.subject|default('—') }}</td>
+            <td>{{ m.created_at }}</td>
+            <td class="adm-actions">
+                <a class="adm-link" href="/yonetim/mesajlar/{{ m.id }}">Aç</a>
+                <form method="post" action="/yonetim/mesajlar/{{ m.id }}/sil" data-confirm="Mesaj silinsin mi?">
+                    <input type="hidden" name="_csrf" value="{{ csrf }}">
+                    <button class="adm-link adm-link--danger">Sil</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="adm-empty">Henüz mesaj yok.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

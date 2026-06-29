@@ -1,0 +1,30 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'pages' %}
+{% block title %}{{ page ? 'Sayfa Düzenle' : 'Yeni Sayfa' }}{% endblock %}
+
+{% block content %}
+<form class="adm-form" method="post" action="{{ action }}">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <div class="adm-form__grid">
+        <div class="adm-form__main">
+            <div class="adm-card">
+                <label>Başlık *<input type="text" name="title" value="{{ page.title|default('') }}" required></label>
+                <label>Slug<input type="text" name="slug" value="{{ page.slug|default('') }}" placeholder="hakkimizda"></label>
+                <label>İçerik (HTML)<textarea name="body" rows="16" class="adm-html">{{ page.body|default('') }}</textarea></label>
+            </div>
+        </div>
+        <div class="adm-form__side">
+            <div class="adm-card">
+                <h3>SEO</h3>
+                <label>Meta Başlık<input type="text" name="meta_title" value="{{ page.meta_title|default('') }}"></label>
+                <label>Meta Açıklama<textarea name="meta_description" rows="3">{{ page.meta_description|default('') }}</textarea></label>
+                <label class="adm-check"><input type="checkbox" name="is_active" {{ page is null or page.is_active ? 'checked' }}> Aktif</label>
+            </div>
+            <div class="adm-card adm-save">
+                <button type="submit" class="adm-btn adm-btn--primary">Kaydet</button>
+                <a href="/yonetim/sayfalar" class="adm-btn">Vazgeç</a>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

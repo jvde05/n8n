@@ -1,0 +1,12 @@
+{% if site.whatsapp %}
+<a class="float-btn float-btn--wa" href="{{ whatsapp_link('Merhaba, aracım için bilgi almak istiyorum.') }}" target="_blank" rel="noopener" aria-label="WhatsApp ile yazın">
+    <span class="float-btn__icon">💬</span>
+    <span class="float-btn__label">WhatsApp</span>
+</a>
+{% endif %}
+{% if site.phone_primary %}
+<a class="float-btn float-btn--call" href="{{ tel_link(site.phone_primary) }}" aria-label="Hemen ara">
+    <span class="float-btn__icon">📞</span>
+    <span class="float-btn__label">Ara</span>
+</a>
+{% endif %}

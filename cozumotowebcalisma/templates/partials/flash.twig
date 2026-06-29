@@ -1,0 +1,10 @@
+{% if flash is defined and flash|length %}
+<div class="container flash-wrap">
+    {% for f in flash %}
+        <div class="flash flash--{{ f.type }}" role="alert">
+            <span>{{ f.message }}</span>
+            <button type="button" class="flash__close" aria-label="Kapat">×</button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,19 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'account' %}
+{% block title %}Hesabım{% endblock %}
+
+{% block content %}
+<div class="adm-card adm-card--narrow">
+    <h2>Şifre Değiştir</h2>
+    <p class="adm-hint">Giriş: <strong>{{ auth.email }}</strong></p>
+    <form method="post" action="/yonetim/hesap/sifre">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <label>Mevcut Şifre<input type="password" name="current_password" required></label>
+        <label>Yeni Şifre (en az 8 karakter)<input type="password" name="new_password" required minlength="8"></label>
+        <label>Yeni Şifre (Tekrar)<input type="password" name="new_password_confirm" required minlength="8"></label>
+        <div class="adm-save">
+            <button type="submit" class="adm-btn adm-btn--primary">Güncelle</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

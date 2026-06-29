@@ -1,0 +1,62 @@
+{% extends 'layout.twig' %}
+{% block title %}İletişim | {{ site.brand_name|default('Çözüm Oto Elektrik') }}{% endblock %}
+{% block description %}{{ site.brand_name|default('Çözüm Oto Elektrik') }} iletişim bilgileri, adres ve konum. Esenyurt / İstanbul.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div class="container">
+        <nav class="breadcrumb"><a href="/">Anasayfa</a> / <span>İletişim</span></nav>
+        <h1>İletişim</h1>
+        <p>Sorularınız ve randevu için bize ulaşın.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container contact-layout">
+        <div class="contact-info">
+            <div class="contact-info__item">
+                <h3>📍 Adres</h3>
+                <p>{{ site.address|default('Esenyurt / İstanbul') }}</p>
+            </div>
+            <div class="contact-info__item">
+                <h3>📞 Telefon</h3>
+                {% if site.phone_primary %}<p><a href="{{ tel_link(site.phone_primary) }}">{{ site.phone_primary }}</a></p>{% endif %}
+                {% if site.phone_secondary %}<p><a href="{{ tel_link(site.phone_secondary) }}">{{ site.phone_secondary }}</a></p>{% endif %}
+            </div>
+            {% if site.whatsapp %}
+            <div class="contact-info__item">
+                <h3>💬 WhatsApp</h3>
+                <p><a href="{{ whatsapp_link() }}" target="_blank" rel="noopener">{{ site.whatsapp }}</a></p>
+            </div>
+            {% endif %}
+            {% if site.working_hours %}
+            <div class="contact-info__item">
+                <h3>🕐 Çalışma Saatleri</h3>
+                <p>{{ site.working_hours }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <form class="contact-form" method="post" action="/iletisim">
+            <input type="hidden" name="_csrf" value="{{ csrf }}">
+            <div class="form-row">
+                <label>Ad Soyad *<input type="text" name="name" required></label>
+                <label>Telefon<input type="tel" name="phone"></label>
+            </div>
+            <div class="form-row">
+                <label>E-posta<input type="email" name="email"></label>
+                <label>Konu<input type="text" name="subject"></label>
+            </div>
+            <label>Mesajınız *<textarea name="message" rows="5" required></textarea></label>
+            <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn--primary">Gönder</button>
+        </form>
+    </div>
+
+    {% if site.maps_embed %}
+    <div class="map">{{ site.maps_embed|raw }}</div>
+    {% elseif site.maps_url %}
+    <div class="container map-link"><a class="btn btn--ghost" href="{{ site.maps_url }}" target="_blank" rel="noopener">Haritada Aç →</a></div>
+    {% endif %}
+</section>
+{% endblock %}

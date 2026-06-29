@@ -1,0 +1,34 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'faqs' %}
+{% block title %}Sıkça Sorulan Sorular{% endblock %}
+
+{% block content %}
+<div class="adm-card">
+    <div class="adm-card__head">
+        <h2>S.S.S. ({{ faqs|length }})</h2>
+        <a class="adm-btn adm-btn--primary" href="/yonetim/sss/yeni">+ Yeni Soru</a>
+    </div>
+    <table class="adm-table">
+        <thead><tr><th>Sıra</th><th>Soru</th><th>Hizmet</th><th>Durum</th><th></th></tr></thead>
+        <tbody>
+        {% for f in faqs %}
+        <tr>
+            <td>{{ f.sort_order }}</td>
+            <td><strong>{{ f.question }}</strong></td>
+            <td>{{ f.service_title|default('Genel') }}</td>
+            <td>{% if f.is_active %}<span class="adm-badge adm-badge--on">Aktif</span>{% else %}<span class="adm-badge">Pasif</span>{% endif %}</td>
+            <td class="adm-actions">
+                <a class="adm-link" href="/yonetim/sss/{{ f.id }}/duzenle">Düzenle</a>
+                <form method="post" action="/yonetim/sss/{{ f.id }}/sil" data-confirm="Silinsin mi?">
+                    <input type="hidden" name="_csrf" value="{{ csrf }}">
+                    <button class="adm-link adm-link--danger">Sil</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="adm-empty">Henüz soru eklenmemiş.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+# Document root public/ klasörüne ayarlanamıyorsa, tüm istekleri public/'e yönlendirir.
+# (Tercihen alan adının document root'unu doğrudan public/ yapın.)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Hassas dosyalara erişimi engelle
+<FilesMatch "^\.env|composer\.(json|lock)$">
+    Require all denied
+</FilesMatch>

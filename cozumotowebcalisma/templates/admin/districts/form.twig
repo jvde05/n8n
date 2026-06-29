@@ -1,0 +1,19 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'districts' %}
+{% block title %}{{ district ? 'İlçe Düzenle' : 'Yeni İlçe' }}{% endblock %}
+
+{% block content %}
+<form class="adm-form" method="post" action="{{ action }}">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <div class="adm-card adm-card--narrow">
+        <label>İlçe Adı *<input type="text" name="name" value="{{ district.name|default('') }}" required placeholder="Esenyurt"></label>
+        <label>Slug (boş bırakılırsa addan üretilir)<input type="text" name="slug" value="{{ district.slug|default('') }}" placeholder="esenyurt"></label>
+        <label>Sıra<input type="number" name="sort_order" value="{{ district.sort_order|default(0) }}"></label>
+        <label class="adm-check"><input type="checkbox" name="is_active" {{ district is null or district.is_active ? 'checked' }}> Aktif</label>
+        <div class="adm-save">
+            <button type="submit" class="adm-btn adm-btn--primary">Kaydet</button>
+            <a href="/yonetim/ilceler" class="adm-btn">Vazgeç</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

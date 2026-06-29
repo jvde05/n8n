@@ -1,0 +1,33 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'pages' %}
+{% block title %}Sayfalar{% endblock %}
+
+{% block content %}
+<div class="adm-card">
+    <div class="adm-card__head">
+        <h2>Sayfalar ({{ pages|length }})</h2>
+        <a class="adm-btn adm-btn--primary" href="/yonetim/sayfalar/yeni">+ Yeni Sayfa</a>
+    </div>
+    <table class="adm-table">
+        <thead><tr><th>Başlık</th><th>Slug</th><th>Durum</th><th></th></tr></thead>
+        <tbody>
+        {% for p in pages %}
+        <tr>
+            <td><strong>{{ p.title }}</strong></td>
+            <td><code>{{ p.slug == 'hakkimizda' ? '/hakkimizda' : '/sayfa/' ~ p.slug }}</code></td>
+            <td>{% if p.is_active %}<span class="adm-badge adm-badge--on">Aktif</span>{% else %}<span class="adm-badge">Pasif</span>{% endif %}</td>
+            <td class="adm-actions">
+                <a class="adm-link" href="/yonetim/sayfalar/{{ p.id }}/duzenle">Düzenle</a>
+                <form method="post" action="/yonetim/sayfalar/{{ p.id }}/sil" data-confirm="Bu sayfayı silmek istediğinize emin misiniz?">
+                    <input type="hidden" name="_csrf" value="{{ csrf }}">
+                    <button class="adm-link adm-link--danger">Sil</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="adm-empty">Henüz sayfa eklenmemiş.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ service.meta_title|default(service.title ~ ' | ' ~ site.brand_name) }}{% endblock %}
+{% block description %}{{ service.meta_description|default(service.summary|default(service.body|excerpt(150))) }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div class="container">
+        <nav class="breadcrumb"><a href="/">Anasayfa</a> / <a href="/hizmetler">Hizmetler</a> / <span>{{ service.title }}</span></nav>
+        <h1>{{ service.title }}</h1>
+        {% if service.summary %}<p>{{ service.summary }}</p>{% endif %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="container content-layout">
+        <article class="content">
+            {% if service.image %}<img class="content__hero" src="/{{ service.image }}" alt="{{ service.title }}">{% endif %}
+            <div class="prose">{{ service.body|raw }}</div>
+
+            <div class="content__cta">
+                {% if site.whatsapp %}<a class="btn btn--primary" href="{{ whatsapp_link('Merhaba, ' ~ service.title ~ ' hakkında bilgi almak istiyorum.') }}" target="_blank" rel="noopener">WhatsApp'tan Sor</a>{% endif %}
+                {% if site.phone_primary %}<a class="btn btn--ghost" href="{{ tel_link(site.phone_primary) }}">{{ site.phone_primary }}</a>{% endif %}
+            </div>
+
+            {% if faqs|length %}
+            <div class="faq">
+                <h2>Sıkça Sorulan Sorular</h2>
+                {% for f in faqs %}
+                <details class="faq__item"><summary>{{ f.question }}</summary><div class="faq__body">{{ f.answer|nl2br }}</div></details>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </article>
+
+        <aside class="sidebar">
+            {% if districts|length %}
+            <div class="sidebar__box">
+                <h3>Hizmet Bölgelerimiz</h3>
+                <p class="sidebar__hint">{{ service.title }} için bölgenizi seçin:</p>
+                <ul class="district-list">
+                    {% for d in districts %}
+                    <li><a href="/hizmet/{{ service.slug }}/{{ d.slug }}">{{ d.name }} {{ service.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <div class="sidebar__box sidebar__box--accent">
+                <h3>Hızlı İletişim</h3>
+                {% if site.phone_primary %}<a class="sidebar__phone" href="{{ tel_link(site.phone_primary) }}">{{ site.phone_primary }}</a>{% endif %}
+                {% if site.address %}<p>{{ site.address }}</p>{% endif %}
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

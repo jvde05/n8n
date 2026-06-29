@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site.site_title|default(app.name) }}{% endblock %}</title>
+    <meta name="description" content="{% block description %}{{ site.site_description|default('Renault EDC şanzıman, beyin ve oto elektronik servisi.') }}{% endblock %}">
+    <link rel="canonical" href="{% block canonical %}{{ app.url }}{{ current_path|default('') }}{% endblock %}">
+    <meta property="og:title" content="{{ block('title') }}">
+    <meta property="og:description" content="{{ block('description') }}">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#0b0e14">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="/assets/css/site.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+{% include 'partials/header.twig' %}
+
+{% include 'partials/flash.twig' %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+{% include 'partials/footer.twig' %}
+{% include 'partials/floating.twig' %}
+
+<script src="/assets/js/site.js" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

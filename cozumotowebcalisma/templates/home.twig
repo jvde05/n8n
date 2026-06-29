@@ -1,0 +1,108 @@
+{% extends 'layout.twig' %}
+
+{% block title %}{{ site.site_title|default('Çözüm Oto Elektrik — Renault EDC Şanzıman & Elektronik Servisi') }}{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero__inner">
+        <div class="hero__text">
+            <span class="hero__badge">Renault Uzman Servisi · Esenyurt / İstanbul</span>
+            <h1>{{ site.hero_title|default('Renault EDC Şanzıman ve Oto Elektronik Çözüm Merkezi') }}</h1>
+            <p>{{ site.hero_subtitle|default('EDC şanzıman, beyin onarımı, kavrama, EGR ve partikül filtre temizliğinde garantili işçilik. Aracınız aynı gün içinde teslim edilir.') }}</p>
+            <div class="hero__actions">
+                {% if site.whatsapp %}<a class="btn btn--primary" href="{{ whatsapp_link('Merhaba, arıza tespiti için bilgi almak istiyorum.') }}" target="_blank" rel="noopener">WhatsApp'tan Yaz</a>{% endif %}
+                {% if site.phone_primary %}<a class="btn btn--ghost" href="{{ tel_link(site.phone_primary) }}">{{ site.phone_primary }}</a>{% endif %}
+            </div>
+            <ul class="hero__trust">
+                <li>✔ Garantili İşçilik</li>
+                <li>✔ Aynı Gün Teslim</li>
+                <li>✔ Ücretsiz Ön Değerlendirme</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section__head">
+            <h2>Hizmetlerimiz</h2>
+            <p>Renault ve uyumlu modellerde elektronik ve mekanik arızalara uçtan uca çözüm.</p>
+        </div>
+        <div class="cards">
+            {% for s in services %}
+            <a class="card" href="/hizmet/{{ s.slug }}">
+                <span class="card__icon">{{ s.icon|default('🔧') }}</span>
+                <h3>{{ s.title }}</h3>
+                <p>{{ s.summary|default(s.body|excerpt(110)) }}</p>
+                <span class="card__more">Detaylar →</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt">
+    <div class="container why">
+        <div class="why__text">
+            <h2>Neden {{ site.brand_name|default('Çözüm Oto Elektrik') }}?</h2>
+            <ul class="why__list">
+                <li><strong>Uzmanlık:</strong> Yıllara dayanan Renault EDC ve oto elektronik deneyimi.</li>
+                <li><strong>Güncel Cihazlar:</strong> Orijinal diagnostik ve programlama ekipmanları.</li>
+                <li><strong>Şeffaflık:</strong> Onarım öncesi net bilgilendirme ve fiyatlandırma.</li>
+                <li><strong>Garanti:</strong> Yapılan tüm işlemler garanti kapsamındadır.</li>
+            </ul>
+            <a class="btn btn--primary" href="/iletisim">Randevu / Bilgi Al</a>
+        </div>
+        <div class="why__stats">
+            <div class="stat"><strong>10+</strong><span>Yıl Tecrübe</span></div>
+            <div class="stat"><strong>5.000+</strong><span>Onarılan Araç</span></div>
+            <div class="stat"><strong>%100</strong><span>Garantili İşçilik</span></div>
+            <div class="stat"><strong>Aynı Gün</strong><span>Teslim</span></div>
+        </div>
+    </div>
+</section>
+
+{% if faqs|length %}
+<section class="section">
+    <div class="container">
+        <div class="section__head"><h2>Sıkça Sorulan Sorular</h2></div>
+        <div class="faq">
+            {% for f in faqs %}
+            <details class="faq__item">
+                <summary>{{ f.question }}</summary>
+                <div class="faq__body">{{ f.answer|nl2br }}</div>
+            </details>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if gallery|length %}
+<section class="section section--alt">
+    <div class="container">
+        <div class="section__head"><h2>Çalışmalarımızdan</h2><a href="/galeri" class="section__link">Tüm galeri →</a></div>
+        <div class="masonry">
+            {% for g in gallery %}
+            <a class="masonry__item" href="/{{ g.file_path }}" target="_blank" rel="noopener">
+                <img src="/{{ g.file_path }}" alt="{{ g.title|default('Çalışma görseli') }}" loading="lazy">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="cta">
+    <div class="container cta__inner">
+        <div>
+            <h2>Aracınızda EDC veya elektronik arıza mı var?</h2>
+            <p>Hemen iletişime geçin, ücretsiz ön değerlendirme yapalım.</p>
+        </div>
+        <div class="cta__actions">
+            {% if site.phone_primary %}<a class="btn btn--light" href="{{ tel_link(site.phone_primary) }}">{{ site.phone_primary }}</a>{% endif %}
+            {% if site.whatsapp %}<a class="btn btn--primary" href="{{ whatsapp_link() }}" target="_blank" rel="noopener">WhatsApp</a>{% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

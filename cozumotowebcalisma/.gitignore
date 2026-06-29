@@ -1,0 +1,11 @@
+/vendor/
+/.env
+/database/*.sqlite
+/database/*.sqlite-journal
+/var/
+/public/assets/uploads/*
+!/public/assets/uploads/.gitkeep
+.DS_Store
+*.log
+.idea/
+.vscode/

@@ -1,0 +1,41 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'dashboard' %}
+{% block title %}Panel{% endblock %}
+
+{% block content %}
+<div class="adm-stats">
+    <a class="adm-stat" href="/yonetim/hizmetler"><span class="adm-stat__num">{{ stats.services }}</span><span class="adm-stat__lbl">Hizmet</span></a>
+    <a class="adm-stat" href="/yonetim/ilceler"><span class="adm-stat__num">{{ stats.districts }}</span><span class="adm-stat__lbl">İlçe</span></a>
+    <a class="adm-stat" href="/yonetim/galeri"><span class="adm-stat__num">{{ stats.gallery }}</span><span class="adm-stat__lbl">Galeri Görseli</span></a>
+    <a class="adm-stat adm-stat--accent" href="/yonetim/mesajlar"><span class="adm-stat__num">{{ stats.unread }}</span><span class="adm-stat__lbl">Okunmamış Mesaj</span></a>
+</div>
+
+<div class="adm-card">
+    <div class="adm-card__head"><h2>Son Mesajlar</h2><a class="adm-btn" href="/yonetim/mesajlar">Tümü</a></div>
+    {% if recent_messages|length %}
+    <table class="adm-table">
+        <thead><tr><th>Ad</th><th>İletişim</th><th>Konu</th><th>Tarih</th><th></th></tr></thead>
+        <tbody>
+        {% for m in recent_messages %}
+        <tr class="{{ m.is_read ? '' : 'is-unread' }}">
+            <td>{{ m.name }}</td>
+            <td>{{ m.phone|default(m.email) }}</td>
+            <td>{{ m.subject|default('—') }}</td>
+            <td>{{ m.created_at }}</td>
+            <td><a class="adm-link" href="/yonetim/mesajlar/{{ m.id }}">Aç</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="adm-empty">Henüz mesaj yok.</p>
+    {% endif %}
+</div>
+
+<div class="adm-quick">
+    <a class="adm-btn adm-btn--primary" href="/yonetim/hizmetler/yeni">+ Hizmet Ekle</a>
+    <a class="adm-btn adm-btn--primary" href="/yonetim/ilceler/yeni">+ İlçe Ekle</a>
+    <a class="adm-btn adm-btn--primary" href="/yonetim/sayfalar/yeni">+ Sayfa Ekle</a>
+    <a class="adm-btn" href="/yonetim/ayarlar">⚙️ Site Ayarları</a>
+</div>
+{% endblock %}

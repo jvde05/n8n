@@ -1,0 +1,38 @@
+{% extends 'admin/layout.twig' %}
+{% set current_nav = 'gallery' %}
+{% block title %}Galeri{% endblock %}
+
+{% block content %}
+<div class="adm-card">
+    <h2>Görsel Yükle</h2>
+    <form method="post" action="/yonetim/galeri" enctype="multipart/form-data" class="adm-upload">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <input type="file" name="images[]" accept="image/*" multiple required>
+        <input type="text" name="title" placeholder="Başlık (opsiyonel)">
+        <button type="submit" class="adm-btn adm-btn--primary">Yükle</button>
+    </form>
+    <p class="adm-hint">JPG, PNG, WEBP, GIF · maks. 8MB · birden fazla seçebilirsiniz.</p>
+</div>
+
+<div class="adm-card">
+    <div class="adm-card__head"><h2>Galeri ({{ images|length }})</h2></div>
+    {% if images|length %}
+    <div class="adm-gallery">
+        {% for g in images %}
+        <div class="adm-gallery__item">
+            <img src="/{{ g.file_path }}" alt="{{ g.title|default('') }}" loading="lazy">
+            <div class="adm-gallery__bar">
+                <span>{{ g.title|default('—') }}</span>
+                <form method="post" action="/yonetim/galeri/{{ g.id }}/sil" data-confirm="Görsel silinsin mi?">
+                    <input type="hidden" name="_csrf" value="{{ csrf }}">
+                    <button class="adm-link adm-link--danger">Sil</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="adm-empty">Henüz görsel yok.</p>
+    {% endif %}
+</div>
+{% endblock %}
