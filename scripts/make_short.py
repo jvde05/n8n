@@ -36,7 +36,7 @@ def pexels_videos(keyword, want=2):
     if not PEXELS_KEY:
         return []
     url = "https://api.pexels.com/videos/search?" + urllib.parse.urlencode({
-        "query": keyword, "orientation": "portrait", "size": "medium", "per_page": 8
+        "query": keyword, "orientation": "portrait", "size": "large", "per_page": 12
     })
     req = urllib.request.Request(url, headers={"Authorization": PEXELS_KEY})
     try:
@@ -47,9 +47,12 @@ def pexels_videos(keyword, want=2):
     results = []
     for v in data.get("videos", []):
         files = [f for f in v.get("video_files", []) if (f.get("height") or 0) >= (f.get("width") or 0)]
-        files.sort(key=lambda f: abs((f.get("height") or 0) - H))
-        if files:
-            results.append(files[0]["link"])
+        # En az hedef genislikte olanlari tercih et (upscale yok), yoksa en buyugu.
+        hd = [f for f in files if (f.get("width") or 0) >= W]
+        pool = hd or files
+        pool.sort(key=lambda f: (f.get("width") or 0) * (f.get("height") or 0), reverse=True)
+        if pool:
+            results.append(pool[0]["link"])
         if len(results) >= want:
             break
     return results
@@ -66,19 +69,22 @@ def download(url, dest):
 
 def normalize_clip(src, dst, seconds=6):
     """Klibi 1080x1920'ye crop/scale eder, sessiz ve sabit fps yapar."""
-    vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase,"
-          f"crop={W}:{H},fps={FPS},setsar=1")
+    # Yuksek kaliteli ara dosya (CRF 16). Lanczos olceklendirme keskinligi korur.
+    vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase:flags=lanczos,"
+          f"crop={W}:{H},fps={FPS},setsar=1,format=yuv420p")
     run(["ffmpeg", "-y", "-t", str(seconds), "-i", src, "-an",
-         "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
-         "-pix_fmt", "yuv420p", dst])
+         "-vf", vf, "-c:v", "libx264", "-preset", "fast", "-crf", "16",
+         "-profile:v", "high", "-pix_fmt", "yuv420p",
+         "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709",
+         dst])
 
 
 def color_bg(dst, seconds):
     """Stok bulunamazsa duz gradient arka plan."""
     run(["ffmpeg", "-y", "-f", "lavfi",
          "-i", f"color=c=0x101820:s={W}x{H}:d={seconds}:r={FPS}",
-         "-vf", "noise=alls=8:allf=t", "-c:v", "libx264",
-         "-pix_fmt", "yuv420p", dst])
+         "-vf", "noise=alls=8:allf=t,format=yuv420p", "-c:v", "libx264",
+         "-crf", "18", "-pix_fmt", "yuv420p", dst])
 
 
 def vtt_to_srt(vtt_path, srt_path, words_per_line=4):
@@ -149,8 +155,10 @@ def main():
         with open(concat_txt, "w") as f:
             for c in seq:
                 f.write(f"file '{c}'\n")
+        # Klipler ayni codec/cozunurluk/fps oldugundan yeniden encode etmeden
+        # birlestir (stream copy) -> bir nesil kalite kaybi onlenir.
         run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", concat_txt,
-             "-t", str(dur), "-c:v", "libx264", "-pix_fmt", "yuv420p", bg])
+             "-c", "copy", bg])
     else:
         color_bg(bg, dur)
 
@@ -170,8 +178,12 @@ def main():
         fc = f"[0:v]{sub_filter}[v];[1:a]volume=2.0[a]"
     cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]",
             "-t", str(dur), "-r", str(FPS),
-            "-c:v", "libx264", "-preset", "medium", "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out]
+            # Tek ve son encode: yuksek kalite (CRF 18) + YouTube'un sevdigi profil/renk.
+            "-c:v", "libx264", "-preset", "slow", "-crf", "18",
+            "-profile:v", "high", "-level", "4.2", "-pix_fmt", "yuv420p",
+            "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709",
+            "-c:a", "aac", "-b:a", "256k", "-ar", "48000",
+            "-movflags", "+faststart", out]
     run(cmd)
 
     print("OK:", out, flush=True)

@@ -123,6 +123,30 @@ Her sey yolundaysa **YouTube'a Yukle** node → `options → privacyStatus` dege
   (orn. Turkce narration istersen prompt'a "narration in Turkish" ekle ve `voice`'u
   `tr-TR-...` yap).
 
+## 9. Kalite / optimizasyon (YouTube re-encode'a karsi)
+
+YouTube her videoyu yeniden sikistirir; amac ona **temiz, yuksek kaliteli** kaynak
+vermek ki bozma minimum olsun. Render pipeline buna gore ayarli:
+
+- **Tek nesil encode:** Klipler stream-copy ile birlestirilir (yeniden encode yok),
+  sadece son adimda **bir kez** yuksek kaliteli encode yapilir. Boylece cok-nesilli
+  kalite kaybi onlenir.
+- **CRF 18 + preset slow + profile high** — gorsel kalite/dosya dengesi yuksek.
+- **BT.709 renk + lanczos olceklendirme** — renk kaymasi ve bulaniklik onlenir.
+- **48kHz / 256k AAC** ses.
+- **Pexels'ten en yuksek cozunurluklu dikey klip** secilir (mumkunse upscale yok).
+
+Daha da yukari cekmek istersen (`scripts/make_short.py`):
+- **4K dikey:** `W, H = 2160, 3840`. YouTube >=1080p Shorts'a daha iyi codec
+  (VP9/AV1) verir; 4K'da fark daha belirgin olur ama render ~3-4x yavaslar ve
+  Pexels'te her konuda 4K dikey bulunmayabilir. **Oneri: 1080x1920'de kal**, kalite
+  zaten yeterli ve uretim hizli.
+- **Daha keskin:** `-crf 18` yerine `-crf 16` (dosya buyur, kalite artar).
+- **Yuksek hareket** (oyun/aksiyon) icin `-preset slow` yerine `-preset slower`.
+
+> Not: 60fps istersen `FPS = 60` yap **ve** Pexels'te 60fps klip sec; aksi halde
+> 30fps kaynagi 60'a cikarmak kalite katmaz, sadece dosyayi buyutur.
+
 ## Sorun giderme
 
 - **Render node hata veriyor:** `docker compose logs -f n8n` ile ffmpeg/edge-tts
