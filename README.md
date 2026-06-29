@@ -4,6 +4,9 @@ Faceless kisa video icerigi **otomatik** uretip yukleyen, mumkun oldugunca
 **ucretsiz** ve **kendi sunucunda** calisan moduler bir sistem. Bugun YouTube
 Shorts; mimari cok platformlu (TikTok / Reels / X ... yol haritasinda).
 
+> 🚀 **Ilk kez kuruyorsan / canli test edeceksen: [QUICKSTART.md](QUICKSTART.md)**
+> (asamali, uctan uca: once render kaniti, sonra YouTube, sonra ogrenme dongusu)
+>
 > 🏗️ Teknik mimari, provider yapisi ve yol haritasi icin: **[ARCHITECTURE.md](ARCHITECTURE.md)**
 >
 > Is mantigi `acos/` paketinde (moduler, takilip-cikarilabilir provider'lar).
