@@ -4,7 +4,7 @@ Her kanal kendi nis, dil, ses, platform ve provider secimini tasir —
 boylece 3-4 (veya 50) kanali tek kod tabaniyla yonetebiliriz.
 """
 from dataclasses import dataclass, field, asdict
-from typing import List
+from typing import Dict, List
 import json
 import os
 
@@ -50,6 +50,11 @@ class ChannelConfig:
     trend_sources: List[str] = field(default_factory=lambda: ["google_trends", "reddit"])
     subreddits: List[str] = field(default_factory=lambda: ["todayilearned", "Damnthatsinteresting"])
     llm_model: str = "claude-haiku-4-5-20251001"
+    # Surekli A/B testi: {boyut: [kollar]}. Bos -> A/B kapali.
+    experiments: Dict[str, list] = field(default_factory=lambda: {
+        "words_per_caption": [2, 3],
+        "target_words": [120, 140],
+    })
     providers: ProviderSelection = field(default_factory=ProviderSelection)
     render: RenderOptions = field(default_factory=RenderOptions)
 

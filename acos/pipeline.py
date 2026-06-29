@@ -49,12 +49,24 @@ def produce_video(job: dict, workdir: str, cfg: Optional[ChannelConfig] = None) 
 
 def run_job(cfg: ChannelConfig, topic: str, workdir: Optional[str] = None,
             trends: Optional[List[str]] = None, publish: bool = False) -> dict:
-    """Uctan uca: insights+trend ile senaryo uret -> video uret -> [yayinla]."""
+    """Uctan uca: A/B sec -> insights+trend ile senaryo uret -> video uret -> [yayinla]."""
+    from .store import Store
+    from .experiments import ExperimentEngine
+
     workdir = workdir or _new_workdir()
     llm = registry.make_llm(cfg)
 
+    # --- A/B test: bu tur icin kollari sec ve uygula ---
+    store = Store()
+    engine = ExperimentEngine(store)
+    choices = engine.select(cfg)
+    voice_override, directives = engine.apply(choices, cfg)
+    if voice_override:
+        cfg.voice = voice_override
+
     insights = learning.load_insights(cfg.name)   # self-learning geri beslemesi
-    user = retention.build_user_prompt(topic, cfg.niche, cfg.language, trends, insights)
+    user = retention.build_user_prompt(topic, cfg.niche, cfg.language,
+                                       trends, insights, directives)
     raw = llm.generate(retention.SYSTEM, user, max_tokens=1200)
     pkg = retention.parse_script(raw, voice=cfg.voice, language=cfg.language)
     job = pkg.to_job()
@@ -63,9 +75,21 @@ def run_job(cfg: ChannelConfig, topic: str, workdir: Optional[str] = None,
         json.dump(job, f, ensure_ascii=False, indent=2)
 
     out = produce_video(job, workdir, cfg)
-    result = {"workdir": workdir, "output": out, "job": job, "publish": []}
+    result = {"workdir": workdir, "output": out, "job": job,
+              "ab": choices, "publish": []}
+
     if publish:
-        result["publish"] = [r.__dict__ for r in publish_all(cfg, out, job)]
+        pub = publish_all(cfg, out, job)
+        result["publish"] = [r.__dict__ for r in pub]
+        # A/B atamasini YOUTUBE videosuna bagla (retention sinyali oradan gelir).
+        if choices:
+            yt = next((r for r in pub if r.platform == "youtube"
+                       and r.status == "uploaded" and r.video_id), None)
+            if yt:
+                pk = store.get_pk("youtube", yt.video_id)
+                if pk:
+                    engine.record(pk, choices)
+    store.close()
     return result
 
 
@@ -122,3 +146,13 @@ def learn(cfg: ChannelConfig) -> str:
     text = learning.update_insights(store, cfg.name)
     store.close()
     return text
+
+
+def experiments_report(cfg: ChannelConfig) -> dict:
+    """Her A/B deneyinin kol bazli skor tablosu."""
+    from .store import Store
+    from .experiments import ExperimentEngine
+    store = Store()
+    board = ExperimentEngine(store).leaderboard(cfg)
+    store.close()
+    return board

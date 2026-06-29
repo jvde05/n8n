@@ -83,6 +83,12 @@ def _cmd_learn(args) -> int:
     return 0
 
 
+def _cmd_experiments(args) -> int:
+    cfg = load_channel(args.channel)
+    print(json.dumps(pipeline.experiments_report(cfg), ensure_ascii=False, indent=2))
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="acos")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -107,6 +113,9 @@ def main(argv=None) -> int:
 
     pl = sub.add_parser("learn")
     pl.add_argument("--channel", required=True); pl.set_defaults(func=_cmd_learn)
+
+    pe = sub.add_parser("experiments")
+    pe.add_argument("--channel", required=True); pe.set_defaults(func=_cmd_experiments)
 
     args = p.parse_args(argv)
     return args.func(args)

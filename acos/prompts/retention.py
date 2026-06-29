@@ -41,7 +41,8 @@ _SCHEMA = """Return ONLY raw JSON (no markdown, no code fences) with EXACTLY the
 
 def build_user_prompt(topic: str, niche: str, language: str = "en",
                       trends: Optional[List[str]] = None,
-                      insights: Optional[str] = None) -> str:
+                      insights: Optional[str] = None,
+                      directives: Optional[dict] = None) -> str:
     parts = [
         f"Niche: {niche}.",
         f"Topic / angle: {topic}.",
@@ -53,6 +54,12 @@ def build_user_prompt(topic: str, niche: str, language: str = "en",
     if insights:
         # Analytics geri beslemesi: kazanan desenleri taklit et.
         parts.append(insights)
+    if directives:
+        # A/B test motorundan gelen bu turun yonergeleri.
+        if directives.get("target_words"):
+            parts.append(f"Target narration length: about {directives['target_words']} words.")
+        if directives.get("hook_style"):
+            parts.append(f"Open with this style of hook: {directives['hook_style']}.")
     parts.append(_SCHEMA)
     return "\n\n".join(parts)
 

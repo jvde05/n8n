@@ -89,9 +89,16 @@ python -m acos.cli render /data/jobs/<id>                      # n8n koprusu
 > desenleri cikar) -> bir sonraki `run` bu insights'i prompt'a enjekte eder.
 > Sistem boylece kendi en iyi videolarini taklit etmeyi ogrenir.
 
-**Faz 4 — A/B test motoru:**
-- [ ] Hook / baslik / ses / tempo / hashtag varyant uretimi ve olcumu
-- [ ] Cok kollu haydut (multi-armed bandit) ile kazananlari ogrenme
+**Faz 4 — A/B test motoru — TAMAMLANDI:**
+- [x] Surekli deney cercevesi (`experiments.py`): voice / tempo / hook stili /
+      altyazi yogunlugu kollari config'ten tanimlanir
+- [x] Cok kollu haydut (epsilon-greedy + warmup) ile kol secimi
+- [x] Atamalar SQLite'ta (`assignments`); odul = retention (avg_view_pct) -> yoksa views
+- [x] Pipeline entegrasyonu: sec -> uygula (prompt/render/voice) -> yayinla -> youtube'a bagla
+- [x] CLI: `experiments` (kol bazli skor tablosu)
+
+> Akis: `run` her turda bir kol secer ve uygular; `sync-stats` metrikleri ceker;
+> motor kazanan kollari ogrenip uretimi onlara kaydirir. Tamamen otomatik.
 
 **Faz 5 — Maliyet & olcek:**
 - [ ] LLM yanit cache + prompt kisaltma + model kademeleme

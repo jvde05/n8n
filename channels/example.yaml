@@ -28,6 +28,17 @@ topics:
 
 llm_model: claude-haiku-4-5-20251001
 
+# Surekli A/B testi (Faz 4). Her boyut bir deney; kollar otomatik test edilir,
+# kazanan (retention'a gore) zamanla daha sik secilir. Istemiyorsan: experiments: {}
+experiments:
+  words_per_caption: [2, 3]          # altyazi yogunlugu
+  target_words: [120, 140]           # anlatim tempo/uzunlugu
+  # voice: ["en-US-AriaNeural", "en-US-GuyNeural"]   # ses A/B (kollari sen belirle)
+  # hook_style:
+  #   - "a bold contrarian claim"
+  #   - "a surprising question"
+  #   - "a shocking statistic"
+
 providers:
   llm: anthropic
   tts: edge

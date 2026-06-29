@@ -29,6 +29,11 @@ CREATE TABLE IF NOT EXISTS stats (
     avd_seconds REAL, avg_view_pct REAL,
     FOREIGN KEY(video_pk) REFERENCES videos(pk)
 );
+CREATE TABLE IF NOT EXISTS assignments (
+    video_pk INTEGER, experiment TEXT, arm TEXT, created_at REAL,
+    PRIMARY KEY(video_pk, experiment),
+    FOREIGN KEY(video_pk) REFERENCES videos(pk)
+);
 """
 
 
@@ -67,6 +72,36 @@ class Store:
             "SELECT pk FROM videos WHERE platform=? AND video_id=?",
             (platform, video_id)).fetchone()
         return got["pk"] if got else 0
+
+    def get_pk(self, platform: str, video_id: str) -> int:
+        row = self.conn.execute(
+            "SELECT pk FROM videos WHERE platform=? AND video_id=?",
+            (platform, video_id)).fetchone()
+        return row["pk"] if row else 0
+
+    def record_assignment(self, video_pk: int, experiment: str, arm: str) -> None:
+        self.conn.execute(
+            "INSERT OR REPLACE INTO assignments (video_pk,experiment,arm,created_at) "
+            "VALUES (?,?,?,?)", (video_pk, experiment, str(arm), time.time()))
+        self.conn.commit()
+
+    def arm_rewards(self, channel: str, experiment: str) -> dict:
+        """Bir deneyin her kolu icin: kac sonuc, ort. izlenme yuzdesi, ort. goruntulenme."""
+        rows = self.conn.execute(
+            "SELECT a.arm AS arm, "
+            "COUNT(a.video_pk) AS n_assign, COUNT(s.video_pk) AS n_stats, "
+            "AVG(s.avg_view_pct) AS pct, AVG(s.views) AS views "
+            "FROM assignments a JOIN videos v ON v.pk=a.video_pk "
+            "LEFT JOIN stats s ON s.video_pk=a.video_pk "
+            "WHERE v.channel=? AND a.experiment=? GROUP BY a.arm",
+            (channel, experiment)).fetchall()
+        out = {}
+        for r in rows:
+            out[r["arm"]] = {
+                "n_assign": r["n_assign"], "n_stats": r["n_stats"],
+                "pct": r["pct"], "views": r["views"] or 0.0,
+            }
+        return out
 
     def upsert_stats(self, video_pk: int, stats: dict) -> None:
         self.conn.execute(
