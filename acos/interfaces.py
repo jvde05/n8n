@@ -60,7 +60,8 @@ class PublishResult:
     platform: str
     video_id: str = ""
     url: str = ""
-    status: str = "unknown"
+    status: str = "unknown"   # uploaded | rendered | error | skipped
+    detail: str = ""
 
 
 # --------------------------------------------------------------------------- #

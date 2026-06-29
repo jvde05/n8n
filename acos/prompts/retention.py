@@ -40,7 +40,8 @@ _SCHEMA = """Return ONLY raw JSON (no markdown, no code fences) with EXACTLY the
 
 
 def build_user_prompt(topic: str, niche: str, language: str = "en",
-                      trends: Optional[List[str]] = None) -> str:
+                      trends: Optional[List[str]] = None,
+                      insights: Optional[str] = None) -> str:
     parts = [
         f"Niche: {niche}.",
         f"Topic / angle: {topic}.",
@@ -49,6 +50,9 @@ def build_user_prompt(topic: str, niche: str, language: str = "en",
     if trends:
         parts.append("Currently trending (use if it fits the niche, otherwise ignore): "
                      + "; ".join(trends[:8]))
+    if insights:
+        # Analytics geri beslemesi: kazanan desenleri taklit et.
+        parts.append(insights)
     parts.append(_SCHEMA)
     return "\n\n".join(parts)
 

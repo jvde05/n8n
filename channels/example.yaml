@@ -5,8 +5,11 @@ name: "Mind Blown Facts"
 niche: "mind-blowing science and history facts"
 language: en
 voice: en-US-AriaNeural          # TR icin: tr-TR-EmelNeural / tr-TR-AhmetNeural
-platforms:
-  - youtube                       # ilerde: tiktok, instagram, ...
+platforms:                        # videoyu hangi platformlara dagitsin
+  - youtube
+  # - tiktok                      # TT_ACCESS_TOKEN gerekir (onayli app)
+  # - instagram                   # IG_USER_ID + IG_ACCESS_TOKEN + public video URL
+privacy: ""                       # bos = platform varsayilani (YouTube: private)
 
 # Trend kesfi (anahtar gerekmez). Bos birakirsan asagidaki 'topics' kullanilir.
 trend_sources:
@@ -31,6 +34,7 @@ providers:
   video: pexels
   render: ffmpeg
   publish: youtube
+  analytics: youtube
 
 render:
   width: 1080

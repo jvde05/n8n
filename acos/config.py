@@ -18,6 +18,7 @@ class ProviderSelection:
     video: str = "pexels"
     render: str = "ffmpeg"
     publish: str = "youtube"
+    analytics: str = "youtube"
 
 
 @dataclass
@@ -44,6 +45,7 @@ class ChannelConfig:
     language: str = "en"
     voice: str = "en-US-AriaNeural"
     platforms: List[str] = field(default_factory=lambda: ["youtube"])
+    privacy: str = ""                                       # bos = platform varsayilani
     topics: List[str] = field(default_factory=list)        # statik yedek
     trend_sources: List[str] = field(default_factory=lambda: ["google_trends", "reddit"])
     subreddits: List[str] = field(default_factory=lambda: ["todayilearned", "Damnthatsinteresting"])

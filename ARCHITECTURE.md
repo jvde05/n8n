@@ -73,15 +73,21 @@ python -m acos.cli render /data/jobs/<id>                      # n8n koprusu
 - [x] FFmpeg upgrade: dinamik zoom (Ken Burns), sinematik renk, ses normalizasyonu
 - [x] Config-driven kanallar (YAML), CLI
 
-**Faz 2 — Cok platform yayini:**
-- [ ] Native YouTube Data API uploader (refresh-token, n8n bagimsiz)
-- [ ] TikTok Content Posting API + Instagram Graph API publisher'lari
-- [ ] Platform basina format profilleri (sure/oran/altyazi konumu)
+**Faz 2 — Cok platform yayini — TAMAMLANDI:**
+- [x] Native YouTube Data API uploader (refresh-token, n8n bagimsiz)
+- [x] TikTok Content Posting API + Instagram Graph API publisher'lari
+- [x] Platform basina format profilleri + metadata/hashtag uretimi (`platforms.py`)
+- [x] `publish_all`: tek render -> tum platformlar (biri patlarsa digerleri devam)
 
-**Faz 3 — Analytics geri besleme dongusu (self-learning):**
-- [ ] AnalyticsProvider: CTR, AVD, retention, views cek
-- [ ] Performans veritabani (SQLite) + kazanan desen cikarimi
-- [ ] Promptlari/parametreleri otomatik guncelleme
+**Faz 3 — Analytics geri besleme dongusu (self-learning) — TAMAMLANDI:**
+- [x] AnalyticsProvider: views/likes/comments + (yetki varsa) AVD/izlenme yuzdesi
+- [x] Performans veritabani (SQLite, `store.py`)
+- [x] Kazanan desen cikarimi (`learning.py`) + prompt'a otomatik enjeksiyon
+- [x] CLI: `sync-stats` (metrik cek) ve `learn` (insights uret)
+
+> Akis: yayinla -> `sync-stats` (metrikleri topla) -> `learn` (kazanan
+> desenleri cikar) -> bir sonraki `run` bu insights'i prompt'a enjekte eder.
+> Sistem boylece kendi en iyi videolarini taklit etmeyi ogrenir.
 
 **Faz 4 — A/B test motoru:**
 - [ ] Hook / baslik / ses / tempo / hashtag varyant uretimi ve olcumu

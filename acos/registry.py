@@ -39,15 +39,26 @@ def make_render(cfg: ChannelConfig) -> RenderEngine:
     raise ConfigError(f"Bilinmeyen render engine: {name}")
 
 
-def make_publisher(cfg: ChannelConfig) -> Publisher:
-    name = cfg.providers.publish
-    from .providers.publish.publishers import (
-        NoopPublisher, YouTubePublisher, TikTokPublisher, InstagramPublisher)
-    table = {
-        "noop": NoopPublisher, "youtube": YouTubePublisher,
-        "tiktok": TikTokPublisher, "instagram": InstagramPublisher,
-    }
-    cls = table.get(name)
-    if not cls:
-        raise ConfigError(f"Bilinmeyen publisher: {name}")
-    return cls()
+def make_publisher(name: str) -> Publisher:
+    """Platform adina gore yayinci dondurur (youtube/tiktok/instagram/noop)."""
+    if name == "noop":
+        from .providers.publish.publishers import NoopPublisher
+        return NoopPublisher()
+    if name == "youtube":
+        from .providers.publish.youtube_api import YouTubeAPIPublisher
+        return YouTubeAPIPublisher()
+    if name == "tiktok":
+        from .providers.publish.tiktok import TikTokPublisher
+        return TikTokPublisher()
+    if name == "instagram":
+        from .providers.publish.instagram import InstagramPublisher
+        return InstagramPublisher()
+    raise ConfigError(f"Bilinmeyen publisher: {name}")
+
+
+def make_analytics(cfg: ChannelConfig, channel: str = ""):
+    name = cfg.providers.analytics
+    if name == "youtube":
+        from .providers.analytics.youtube_analytics import YouTubeAnalytics
+        return YouTubeAnalytics(channel=channel or cfg.name)
+    raise ConfigError(f"Bilinmeyen analytics provider: {name}")
